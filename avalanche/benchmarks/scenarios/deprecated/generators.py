@@ -88,6 +88,9 @@ def nc_benchmark(
     train_transform=None,
     eval_transform=None,
     reproducibility_data: Optional[Dict[str, Any]] = None,
+
+    # my code
+    original_classes_in_exp: Optional[List[Set[int]]] = None
 ) -> NCScenario:
     """
     This is the high-level benchmark instances generator for the
@@ -279,6 +282,7 @@ def nc_benchmark(
         class_ids_from_zero_from_first_exp=class_ids_from_zero_from_first_exp,
         class_ids_from_zero_in_each_exp=class_ids_from_zero_in_each_exp,
         reproducibility_data=reproducibility_data,
+        original_classes_in_exp=original_classes_in_exp
     )
 
 

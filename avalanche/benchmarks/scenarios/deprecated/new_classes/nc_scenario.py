@@ -56,7 +56,14 @@ class NCScenario(
         class_ids_from_zero_from_first_exp: bool = False,
         class_ids_from_zero_in_each_exp: bool = False,
         reproducibility_data: Optional[Dict[str, Any]] = None,
+        original_classes_in_exp: Optional[List[Set[int]]] = None
     ):
+        """
+        For using our subsetting, we must enforce that 
+        - shuffle = False,
+        - task_labels = True, 
+        original_classes_in_exp provided!
+        """
         """
         Creates a ``NCGenericScenario`` instance given the training and test
         Datasets and the number of experiences.
@@ -150,6 +157,7 @@ class NCScenario(
 
         self.classes_order: List[int] = []
         """ Stores the class order (remapped class IDs). """
+        # self.classes_order[i] = Class at i-th position
 
         self.classes_order_original_ids: List[int] = torch.unique(
             torch.as_tensor(train_dataset.targets), sorted=True
@@ -180,6 +188,9 @@ class NCScenario(
         A list that, for each experience (identified by its index/ID), stores a 
         set of the original IDs of classes assigned to that experience. 
         This field applies to both train and test streams.
+        """
+        """
+        This is exactly what we want to modify... I want to specify the order and the set of original_classes_in_exp
         """
 
         self.class_ids_from_zero_from_first_exp: bool = (
@@ -359,16 +370,21 @@ class NCScenario(
         # to experience "exp_id"
         # "original_classes_in_exp[exp_id]": list of original class IDs
         # assigned to experience "exp_id"
-        for exp_id in range(n_experiences):
-            classes_start_idx = sum(self.n_classes_per_exp[:exp_id])
-            classes_end_idx = classes_start_idx + self.n_classes_per_exp[exp_id]
+        if original_classes_in_exp is None: 
+            for exp_id in range(n_experiences):
+                classes_start_idx = sum(self.n_classes_per_exp[:exp_id])
+                classes_end_idx = classes_start_idx + self.n_classes_per_exp[exp_id]
 
-            self._classes_in_exp.append(
-                set(self.classes_order[classes_start_idx:classes_end_idx])
-            )
-            self.original_classes_in_exp.append(
-                set(self.classes_order_original_ids[classes_start_idx:classes_end_idx])
-            )
+                self._classes_in_exp.append(
+                    set(self.classes_order[classes_start_idx:classes_end_idx])
+                )
+                self.original_classes_in_exp.append(
+                    set(self.classes_order_original_ids[classes_start_idx:classes_end_idx])
+                )
+        else:
+            """ Make sure that the List[Set[int]] is respected as a data type"""
+            self._classes_in_exp = original_classes_in_exp
+            self.original_classes_in_exp = original_classes_in_exp
 
         # Finally, create the experience -> patterns assignment.
         # In order to do this, we don't load all the patterns
