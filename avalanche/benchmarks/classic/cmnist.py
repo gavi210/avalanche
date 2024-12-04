@@ -9,7 +9,7 @@
 # Website: avalanche.continualai.org                                           #
 ################################################################################
 from pathlib import Path
-from typing import Optional, Sequence, Union, Any
+from typing import Optional, Sequence, Union, Any, List, Set
 import torch
 from PIL.Image import Image
 from torch import Tensor
@@ -85,7 +85,10 @@ def SplitMNIST(
     class_ids_from_zero_from_first_exp: bool = False,
     train_transform: Optional[Any] = _default_mnist_train_transform,
     eval_transform: Optional[Any] = _default_mnist_eval_transform,
-    dataset_root: Optional[Union[str, Path]] = None
+    dataset_root: Optional[Union[str, Path]] = None,
+
+    # my code
+    original_classes_in_exp: Optional[List[Set[int]]] = None,
 ):
     """
     Creates a CL benchmark using the MNIST dataset.
@@ -162,6 +165,7 @@ def SplitMNIST(
         class_ids_from_zero_from_first_exp=class_ids_from_zero_from_first_exp,
         train_transform=train_transform,
         eval_transform=eval_transform,
+        original_classes_in_exp=original_classes_in_exp,
     )
 
 
