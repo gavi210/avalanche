@@ -11,7 +11,7 @@
 
 import random
 from pathlib import Path
-from typing import Sequence, Optional, Union, Any
+from typing import Sequence, Optional, Union, Any, List, Set
 
 from torchvision import transforms
 
@@ -58,7 +58,9 @@ def SplitCIFAR100(
     class_ids_from_zero_from_first_exp: bool = False,
     train_transform: Optional[Any] = _default_cifar100_train_transform,
     eval_transform: Optional[Any] = _default_cifar100_eval_transform,
-    dataset_root: Optional[Union[str, Path]] = None
+    dataset_root: Optional[Union[str, Path]] = None,
+
+    original_classes_in_exp: Optional[List[Set[int]]] = None,
 ):
     """
     Creates a CL benchmark using the CIFAR100 dataset.
@@ -152,6 +154,7 @@ def SplitCIFAR100(
         class_ids_from_zero_from_first_exp=class_ids_from_zero_from_first_exp,
         train_transform=train_transform,
         eval_transform=eval_transform,
+        original_classes_in_exp=original_classes_in_exp,
     )
 
 
